@@ -50,6 +50,12 @@ jobs:
           python -c 'import json,sys; result=json.loads(sys.argv[1]); assert result["prediction"] in (0, 1); assert 0 <= result["confidence"] <= 1' "$response"
           curl --silent --show-error --fail http://localhost:8000/metrics | grep -q 'http_requests_total'
 
+      - name: Show serving container logs on failure
+        if: failure()
+        run: |
+          docker ps -a
+          docker logs heart-disease-api || true
+
       - name: Stop serving container
         if: always()
         run: docker rm --force heart-disease-api || true
