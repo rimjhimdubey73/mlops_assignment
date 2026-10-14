@@ -55,7 +55,7 @@ jobs:
             exit "$exit_code"
           }
           trap on_error ERR
-          curl --retry 20 --retry-connrefused --retry-delay 2 --retry-max-time 60 --silent --show-error --fail http://localhost:8000/health
+          curl --retry 20 --retry-all-errors --retry-connrefused --retry-delay 2 --retry-max-time 60 --silent --show-error --fail http://localhost:8000/health
           response="$(curl --silent --show-error --fail --header 'Content-Type: application/json' --data '{"age":63,"sex":1,"cp":1,"trestbps":145,"chol":233,"fbs":1,"restecg":2,"thalach":150,"exang":0,"oldpeak":2.3,"slope":3,"ca":0,"thal":6}' http://localhost:8000/predict)"
           python -c 'import json,sys; result=json.loads(sys.argv[1]); assert result["prediction"] in (0, 1); assert 0 <= result["confidence"] <= 1' "$response"
           curl --silent --show-error --fail http://localhost:8000/metrics | grep -q 'http_requests_total'
