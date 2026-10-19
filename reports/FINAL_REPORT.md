@@ -1,8 +1,9 @@
 # MLOps Assignment 1: Heart Disease Classification
 
-**Report date:** 2026-10-06  
+**Report date:** 2026-10-19
 **Dataset:** UCI Heart Disease, processed Cleveland subset  
-**Repository URL:** Not configured. This workspace has no Git remote; publish the project and add its URL before submission.
+**Repository URL:** https://github.com/rimjhimdubey73/mlops_assignment
+**Deployment:** Local Minikube; API available by port-forward while the VM and forward are running.
 
 ## 1. Objective and scope
 
@@ -33,19 +34,19 @@ The selected fitted pipeline is saved as an MLflow model and as a standalone ver
 
 ## 5. Automated testing and CI/CD
 
-`.github/workflows/ci.yml` runs on pushes, pull requests, and manual dispatch. It installs the declared development environment, runs Ruff and pytest, acquires the dataset, trains and tracks both candidates, builds and starts the API container, smoke-tests `/health`, `/predict`, and `/metrics`, then uploads model, comparison, and MLflow artifacts. The local test suite covers imputation, target binarization, one-hot encoding, both model pipelines, API response validation, metrics exposition, and request-log content. Local verification completed with Ruff clean and 7 tests passing. The hosted GitHub Actions workflow has not been run from this environment.
+`.github/workflows/ci.yml` runs on pushes, pull requests, and manual dispatch. It installs the declared development environment, runs Ruff and pytest, acquires the dataset, trains and tracks both candidates, builds and starts the API container, smoke-tests `/health`, `/predict`, and `/metrics`, then uploads model, comparison, and MLflow artifacts. The local suite covers imputation, target binarization, one-hot encoding, both model pipelines, API response validation, metrics exposition, and request-log content. Local verification completed with Ruff clean and 7 tests passing. The uploaded GitHub Actions screenshot shows the `quality-and-training` job green, including lint, tests, training, container build, and smoke test.
 
 ## 6. API and container
 
 `app.py` serves the packaged pipeline through FastAPI. `POST /predict` accepts all 13 original feature fields and returns the class, label, predicted-class probability as confidence, and both probabilities. `GET /health` reports model load status. `GET /metrics` exports Prometheus request and latency metrics. JSON request logs include request ID, method, path, status, and latency; request payloads are intentionally excluded.
 
-The Dockerfile builds a Python 3.14.7 image from the versioned package requirements. API behavior was exercised locally against the actual model package. Docker is not installed in the current environment, so the image build/run has not been locally verified; CI is configured to perform it.
+The Dockerfile builds a Python 3.14.7 image from the versioned package requirements. The image built locally and was deployed to Minikube. The actual model loaded successfully; `/health` returned `model_loaded: true`. The documented sample prediction returned class `0`, label `no_disease`, confidence `0.5901`, and probabilities 0.5901 (no disease) / 0.4099 (disease present). Container build and live API behavior were verified locally and by the passing hosted workflow. Successful health and prediction responses are captured in `reports/screenshots/02-health-endpoint.png` and `reports/screenshots/03-predict-endpoint.png`.
 
 ## 7. Deployment and monitoring
 
 `k8s/heart-disease-api.yaml` defines a one-replica Deployment and `LoadBalancer` Service, with startup/readiness/liveness probes, resource limits, non-root execution, and read-only root filesystem. `k8s/monitoring.yaml` deploys Prometheus and Grafana, configures API scraping, provisions a dashboard, and uses ClusterIP services for internal monitoring access. Grafana uses a Kubernetes Secret for its admin password; monitoring storage is ephemeral for this local demonstration.
 
-**Live deployment status: pending.** Docker, kubectl, Minikube, and kind are unavailable in the workspace, and no cloud credentials or Git remote are configured. Therefore no cluster rollout, external deployment URL, dashboard session, or genuine deployment screenshots are claimed. Deploy using the documented prerequisites and commands in `README.md`, then complete the screenshot checklist in `reports/screenshots/README.md`.
+**Local deployment verified:** Minikube 1.35.0 on Kubernetes 1.32.0, deployed 2026-10-19. API, Prometheus, and Grafana each rolled out with one ready replica. The API is exposed by a `LoadBalancer` Service, and a VM port-forward served successful health, prediction, and metrics requests. Prometheus reported the `heart-disease-api` target `up`; Grafana 12.1.1 returned a healthy database status and its provisioned dashboard was found. For client access, follow the README's port-forward instructions; the sample API requests returned HTTP 200 inside the VM.
 
 ## 8. Architecture
 
@@ -72,4 +73,4 @@ flowchart LR
 
 ## 9. Deployment evidence and submission items
 
-The screenshot directory contains a checklist, not fabricated deployment evidence. After a successful cluster deployment, capture the ready Deployment/LoadBalancer, successful health and prediction responses, and the Grafana API dashboard. Add the actual published Git repository URL above. Until those external steps are completed, deployment evidence and repository URL remain submission prerequisites.
+The screenshot directory includes ready Kubernetes workloads (`01-kubernetes-workloads.png`), successful health and prediction responses (`02-health-endpoint.png`, `03-predict-endpoint.png`), Grafana dashboard evidence (`Screenshot (6).png`), and successful GitHub Actions evidence (`Screenshot (9).png`, `Screenshot (15).png`). Original uploaded captures are retained as `Screenshot (16).png` and `Screenshot (17).png`. The uploaded Swagger screenshots (`Screenshot (7).png` and `Screenshot (10).png` through `Screenshot (14).png`) show endpoint documentation/examples rather than completed successful requests. The repository URL is listed above. Use the README's port-forward instructions to access the deployed API.

@@ -135,7 +135,9 @@ $body = @{
 Invoke-RestMethod -Uri "$baseUrl/predict" -Method Post -ContentType "application/json" -Body $body
 ```
 
-If the local cluster does not assign a directly reachable LoadBalancer address, use `kubectl port-forward -n heart-disease service/heart-disease-api 8000:80` and change `$baseUrl` to `http://127.0.0.1:8000` for endpoint verification. Use a non-placeholder strong password for Grafana; do not commit the generated Secret. The screenshot evidence checklist is in `reports/screenshots/README.md`. No deployment screenshots are included until a cluster has actually been run.
+If the local cluster does not assign a directly reachable LoadBalancer address, use `kubectl port-forward -n heart-disease service/heart-disease-api 8000:80` and change `$baseUrl` to `http://127.0.0.1:8000` for endpoint verification. Use a non-placeholder strong password for Grafana; do not commit the generated Secret. The screenshot evidence checklist is in `reports/screenshots/README.md`.
+
+The local Minikube deployment was verified on 2026-10-19. The API, Prometheus, and Grafana deployments rolled out successfully. The container image built from the trained model; `/health` returned `model_loaded: true`; `/predict` returned a prediction and class probabilities; `/metrics` exposed counters; Prometheus marked the API target `up`; and Grafana's provisioned dashboard loaded. For access, start the `kubectl port-forward` command above in the VM terminal and use VS Code's Ports view to open port 8000.
 
 ## Step 8: Monitoring and logging
 
@@ -151,4 +153,4 @@ Open `http://127.0.0.1:3000`, sign in as `admin` with the password used to creat
 
 ## Step 9: Final report
 
-See [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) for the consolidated methods, results, architecture diagram, CI/CD summary, repository status, and deployment evidence checklist. The project has no configured Git remote yet; add the published repository URL before submission. Live cluster screenshots and deployment URLs must be added after deploying on a machine with Docker and Kubernetes available.
+See [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) and [reports/FINAL_REPORT.pdf](reports/FINAL_REPORT.pdf) for the methods, results, architecture, CI/CD, and deployment status. Repository: [rimjhimdubey73/mlops_assignment](https://github.com/rimjhimdubey73/mlops_assignment). The screenshot folder contains Kubernetes workload, health, prediction, Grafana, and passing CI evidence.
