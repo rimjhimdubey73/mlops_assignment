@@ -1,4 +1,8 @@
-# MLOps Heart Disease: Setup 1
+# AIMLCZG523 MLOps Assignment 01: Heart Disease Prediction
+
+**Student:** Rimjhim Dubey
+**BITS ID:** 2025AE05367
+**Email:** 2025ae05367@wilp.bits-pilani.ac.in
 
 ## Data source
 
@@ -8,15 +12,15 @@ This setup uses the processed Cleveland subset of the [UCI Heart Disease dataset
 
 From this project directory, create and activate a virtual environment, then install the declared dependencies:
 
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
 Download and validate the raw source, then create the cleaned CSV:
 
-```powershell
+```bash
 python -m src.data_acquisition
 python -m src.data_preprocessing
 ```
@@ -33,7 +37,7 @@ The notebook's full-dataset imputations are for this EDA artifact. For the later
 
 Install the updated `requirements.txt`, then run from the project directory:
 
-```powershell
+```bash
 python -m src.model_development
 ```
 
@@ -47,7 +51,7 @@ Running `python -m src.model_development` now logs one MLflow run per classifier
 
 To browse the experiment locally, run:
 
-```powershell
+```bash
 mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
@@ -72,7 +76,7 @@ Pass a pandas DataFrame with the original 13 predictor columns (without `num` or
 
 Install the test and lint tools, then run the quality checks locally:
 
-```powershell
+```bash
 python -m pip install -r requirements-dev.txt
 ruff check src tests app.py
 python -m pytest -q
@@ -84,22 +88,19 @@ The unit tests cover missing-value imputation, binary target creation, one-hot e
 
 After training has written `models/current_model.txt`, build and run the API container from the project directory:
 
-```powershell
+```bash
 docker build -t heart-disease-api .
 docker run --rm -p 8000:8000 heart-disease-api
 ```
 
 The FastAPI service loads the versioned sklearn pipeline selected by the pointer. `POST /predict` accepts one JSON object with the original 13 feature names and returns the binary prediction, predicted label, predicted-class probability as confidence, and both class probabilities. `GET /health` reports whether the model loaded. The image uses the model package's pinned requirements and Python 3.14.7, matching the saved model environment.
 
-Example PowerShell request:
+Example request:
 
-```powershell
-$body = @{
-	age = 63; sex = 1; cp = 1; trestbps = 145; chol = 233; fbs = 1
-	restecg = 2; thalach = 150; exang = 0; oldpeak = 2.3; slope = 3
-	ca = 0; thal = 6
-} | ConvertTo-Json
-Invoke-RestMethod -Uri http://localhost:8000/predict -Method Post -ContentType "application/json" -Body $body
+```bash
+curl --request POST http://localhost:8000/predict \\
+  --header 'Content-Type: application/json' \\
+  --data '{"age":63,"sex":1,"cp":1,"trestbps":145,"chol":233,"fbs":1,"restecg":2,"thalach":150,"exang":0,"oldpeak":2.3,"slope":3,"ca":0,"thal":6}'
 ```
 
 The GitHub Actions workflow also builds the image, starts it, and smoke-tests `/predict`. The model input JSON must include all 13 feature keys; values may be `null` where a measurement is missing.
@@ -110,7 +111,7 @@ The Kubernetes manifest in `k8s/heart-disease-api.yaml` creates a one-replica De
 
 Prerequisites: Docker Engine and a running Minikube cluster, or Docker Desktop with Kubernetes enabled. The local image must be built from the project root and made available to the cluster:
 
-```powershell
+```bash
 docker build -t heart-disease-api:latest .
 minikube image load heart-disease-api:latest
 kubectl apply -f k8s/heart-disease-api.yaml
@@ -124,15 +125,12 @@ kubectl rollout status deployment/grafana -n heart-disease --timeout=180s
 
 For Minikube, start `minikube tunnel` in a second terminal and keep it running. Wait for `kubectl get service heart-disease-api -n heart-disease` to show an external address. On Docker Desktop, use the external address reported by the local cluster. Verify the exposed endpoints (replace the address if your cluster reports a different one):
 
-```powershell
-$baseUrl = "http://127.0.0.1"
-Invoke-RestMethod -Uri "$baseUrl/health"
-$body = @{
-	age = 63; sex = 1; cp = 1; trestbps = 145; chol = 233; fbs = 1
-	restecg = 2; thalach = 150; exang = 0; oldpeak = 2.3; slope = 3
-	ca = 0; thal = 6
-} | ConvertTo-Json
-Invoke-RestMethod -Uri "$baseUrl/predict" -Method Post -ContentType "application/json" -Body $body
+```bash
+base_url=http://127.0.0.1:8000
+curl "$base_url/health"
+curl --request POST "$base_url/predict" \\
+  --header 'Content-Type: application/json' \\
+  --data '{"age":63,"sex":1,"cp":1,"trestbps":145,"chol":233,"fbs":1,"restecg":2,"thalach":150,"exang":0,"oldpeak":2.3,"slope":3,"ca":0,"thal":6}'
 ```
 
 If the local cluster does not assign a directly reachable LoadBalancer address, use `kubectl port-forward -n heart-disease service/heart-disease-api 8000:80` and change `$baseUrl` to `http://127.0.0.1:8000` for endpoint verification. Use a non-placeholder strong password for Grafana; do not commit the generated Secret. The screenshot evidence checklist is in `reports/screenshots/README.md`.
@@ -145,12 +143,14 @@ The API writes one-line JSON access/error logs to standard output. Events includ
 
 `k8s/monitoring.yaml` deploys Prometheus with a 15-second scrape interval and provisions Grafana with a dashboard for request rate, 95th-percentile latency, status-class rates, and API target health. Prometheus and Grafana are ClusterIP-only. To inspect them locally:
 
-```powershell
+```bash
 kubectl port-forward -n heart-disease service/grafana 3000:3000
 ```
 
 Open `http://127.0.0.1:3000`, sign in as `admin` with the password used to create the `grafana-admin` Secret, and open the **Heart Disease API** dashboard. Generate a few `/health` and `/predict` requests before checking the panels. To query Prometheus directly, use `kubectl port-forward -n heart-disease service/prometheus 9090:9090` and open `http://127.0.0.1:9090`. Monitoring storage uses `emptyDir` for this local demonstration and is not durable across pod replacement.
 
-## Step 9: Final report
+## Submission status
 
-See [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) and [reports/FINAL_REPORT.pdf](reports/FINAL_REPORT.pdf) for the methods, results, architecture, CI/CD, and deployment status. Repository: [rimjhimdubey73/mlops_assignment](https://github.com/rimjhimdubey73/mlops_assignment). The screenshot folder contains Kubernetes workload, health, prediction, Grafana, and passing CI evidence.
+See [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) and [reports/FINAL_REPORT.pdf](reports/FINAL_REPORT.pdf) for the methods, results, architecture, CI/CD, and deployment status. Repository: [rimjhimdubey73/mlops_assignment](https://github.com/rimjhimdubey73/mlops_assignment). Deployment and CI evidence is in `reports/screenshots/`.
+
+The API is deployed to local Minikube, not a public cloud endpoint. Follow the Kubernetes port-forward instructions above to access it. The required short video recording of the end-to-end pipeline is not currently included and remains to be recorded.

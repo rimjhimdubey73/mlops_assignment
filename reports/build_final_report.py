@@ -230,7 +230,7 @@ def build_report() -> None:
         topMargin=0.54 * inch,
         bottomMargin=0.55 * inch,
         title="MLOps Assignment 01 - Heart Disease Prediction",
-        author="AIMLCZG523",
+        author="Rimjhim Dubey (2025AE05367)",
         subject="End-to-end reproducible ML system report",
     )
     story: list = []
@@ -242,7 +242,7 @@ def build_report() -> None:
     story.extend(
         [
             para("End-to-end machine learning development, experiment tracking, CI/CD, containerization, local Kubernetes deployment, and monitoring.", "ReportSubtitle"),
-            para("Report date: 19 October 2026<br/>Repository: github.com/rimjhimdubey73/mlops_assignment<br/>Dataset: UCI Heart Disease, processed Cleveland subset", "BodySmall"),
+            para("Student: Rimjhim Dubey<br/>BITS ID: 2025AE05367<br/>Email: 2025ae05367@wilp.bits-pilani.ac.in<br/>Report date: 19 October 2026<br/>Repository: github.com/rimjhimdubey73/mlops_assignment<br/>Dataset: UCI Heart Disease, processed Cleveland subset", "BodySmall"),
             Spacer(1, 7),
             para("Executive summary", "Subhead"),
             para("This submission builds a binary heart-disease classifier from the processed Cleveland dataset. Numeric and categorical preprocessing is fitted inside stratified cross-validation to avoid leakage. Logistic Regression and Random Forest are compared with nested cross-validation; the Logistic Regression pipeline is selected by mean outer-fold ROC-AUC and packaged with MLflow. A FastAPI service serves predictions and Prometheus metrics, logs structured request metadata, and is deployed with Prometheus and Grafana to a local Minikube cluster.", "BodySmall"),
@@ -366,9 +366,9 @@ def build_report() -> None:
             para("Build and run", "Subhead"),
             code("docker build -t heart-disease-api:latest .\ndocker run --rm -p 8000:8000 heart-disease-api:latest\n\ncurl http://127.0.0.1:8000/health"),
             para("Container verification", "Subhead"),
-            para("The Docker image built successfully from the trained package. The documented sample payload returned HTTP 200 with prediction 0 (`no_disease`), confidence 0.5901, and probabilities 0.5901 / 0.4099. The same behavior was verified in the Minikube deployment. A public Dev Tunnel request previously returned 504 during prediction while direct VM requests returned 200; this is recorded as a tunnel limitation, not an API test failure.", "BodySmall"),
+            para("The Docker image built successfully from the trained package. The documented sample payload returned HTTP 200 with prediction 0 (`no_disease`), confidence 0.5901, and probabilities 0.5901 / 0.4099. The same behavior was verified in the Minikube deployment.", "BodySmall"),
             para("Successful prediction evidence", "Subhead"),
-            para("The executed sample request, HTTP 200 status, prediction, confidence, and both probabilities are shown in `reports/screenshots/03-predict-endpoint.png`. The terminal screenshot was cropped from the original uploaded capture, which is retained in the screenshot folder.", "BodySmall"),
+            para("The executed sample request, HTTP 200 status, prediction, confidence, and both probabilities are shown in `reports/screenshots/03-predict-endpoint.png`.", "BodySmall"),
             Spacer(1, 3),
             image(SCREENSHOTS / "03-predict-endpoint.png", CONTENT_W, 1.12 * inch),
             PageBreak(),
@@ -387,7 +387,7 @@ def build_report() -> None:
             Spacer(1, 5),
             architecture_diagram(),
             para("Figure 5. Data-to-serving architecture and automated CI path.", "Caption"),
-            para("The live terminal workload capture is not yet in the screenshot folder. The commands above reproduce it. Minikube can stop when the VM is idle; run `minikube start` before capturing deployment output or using the API.", "BodySmall"),
+            para("The workload and endpoint screenshots are included in `reports/screenshots/`. Minikube may stop when the VM is idle; run `minikube start` before using the local API.", "BodySmall"),
             PageBreak(),
         ]
     )
@@ -404,7 +404,7 @@ def build_report() -> None:
             Spacer(1, 5),
         ]
     )
-    add_image(story, SCREENSHOTS / "Screenshot (6).png", "Figure 6. Uploaded Grafana dashboard capture. Review the visible panel data and recapture if the panels do not show recent API traffic.", 4.75 * inch)
+    add_image(story, SCREENSHOTS / "Screenshot (6).png", "Figure 6. Grafana dashboard showing request rate, p95 latency, successful responses, and API target health.", 4.75 * inch)
     story.extend(
         [
             code("minikube kubectl -- port-forward -n heart-disease service/prometheus 9090:9090\nminikube kubectl -- port-forward -n heart-disease service/grafana 3000:3000"),
@@ -413,21 +413,20 @@ def build_report() -> None:
         ]
     )
 
-    start_page("Submission readiness and next actions", "09 | Checklist")
+    start_page("Submission checklist", "09 | Deliverables")
     story.extend(
         [
-            para("Completed and verified", "Subhead"),
+            para("Implemented and verified", "Subhead"),
             bullet("UCI data acquisition, cleaning, EDA figures, preprocessing, two candidate models, nested CV, and documented metrics."),
             bullet("MLflow experiments, logged artifacts, selected serialized pipeline, requirements, and inference API."),
             bullet("Unit tests and Ruff; passing hosted GitHub Actions screenshot; Docker image build and smoke test."),
-            bullet("Minikube API/monitoring deployments, endpoint verification, Prometheus scrape, Grafana dashboard, and request logs."),
-            bullet("Repository link: https://github.com/rimjhimdubey73/mlops_assignment."),
-            para("Still required from the submitter", "Subhead"),
-            bullet("Capture and name `01-kubernetes-workloads.png`, `02-health-endpoint.png`, and `03-predict-endpoint.png` from live successful outputs. Existing Swagger example screens are not substitutes for executed requests."),
-            bullet("Commit or upload the generated `models/` package if the grader must build the image without running training first; otherwise explain that training creates it."),
-            bullet("Use the README's port-forward instructions to access the deployed Minikube API. Keep the Grafana password out of Git."),
-            para("Academic integrity and scope", "Subhead"),
-            para("Be prepared to explain target binarization, leakage prevention, nested CV, why ROC-AUC selected the final candidate, how the packaged preprocessing travels with the estimator, what the API confidence means, and the limitations of a small regional dataset. Do not represent screenshots or results as your own experimentation unless you can explain and reproduce them.", "BodySmall"),
+            bullet("Minikube API and monitoring deployments, endpoint verification, Prometheus scrape, Grafana dashboard, and request logs."),
+            bullet("Repository: https://github.com/rimjhimdubey73/mlops_assignment."),
+            para("Deployment access and remaining item", "Subhead"),
+            bullet("The API is deployed locally on Minikube and has no public URL. Use the README port-forward instructions for access."),
+            bullet("The assignment requests a short video recording of the end-to-end pipeline. No video is currently included; record and add one before submission."),
+            para("Scope", "Subhead"),
+            para("This model is an educational demonstration, not a clinical diagnostic tool. Evaluation uses a small regional dataset and cross-validation rather than an independent external test set.", "BodySmall"),
             para("Full setup commands are in `README.md`; the report is generated with `python reports/build_final_report.py` after installing `requirements-dev.txt`.", "BodySmall"),
         ]
     )
