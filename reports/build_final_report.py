@@ -242,7 +242,7 @@ def build_report() -> None:
     story.extend(
         [
             para("End-to-end machine learning development, experiment tracking, CI/CD, containerization, local Kubernetes deployment, and monitoring.", "ReportSubtitle"),
-            para("Student: Rimjhim Dubey<br/>BITS ID: 2025AE05367<br/>Email: 2025ae05367@wilp.bits-pilani.ac.in<br/>Report date: 19 October 2026<br/>Repository: github.com/rimjhimdubey73/mlops_assignment<br/>Dataset: UCI Heart Disease, processed Cleveland subset", "BodySmall"),
+            para('Student: Rimjhim Dubey<br/>BITS ID: 2025AE05367<br/>Email: 2025ae05367@wilp.bits-pilani.ac.in<br/>Report date: 19 October 2026<br/>Repository: <link href="https://github.com/rimjhimdubey73/mlops_assignment" color="#19756F">github.com/rimjhimdubey73/mlops_assignment</link><br/>Dataset: UCI Heart Disease, processed Cleveland subset', "BodySmall"),
             Spacer(1, 7),
             para("Executive summary", "Subhead"),
             para("This submission builds a binary heart-disease classifier from the processed Cleveland dataset. Numeric and categorical preprocessing is fitted inside stratified cross-validation to avoid leakage. Logistic Regression and Random Forest are compared with nested cross-validation; the Logistic Regression pipeline is selected by mean outer-fold ROC-AUC and packaged with MLflow. A FastAPI service serves predictions and Prometheus metrics, logs structured request metadata, and is deployed with Prometheus and Grafana to a local Minikube cluster.", "BodySmall"),
@@ -421,7 +421,7 @@ def build_report() -> None:
             bullet("MLflow experiments, logged artifacts, selected serialized pipeline, requirements, and inference API."),
             bullet("Unit tests and Ruff; passing hosted GitHub Actions screenshot; Docker image build and smoke test."),
             bullet("Minikube API and monitoring deployments, endpoint verification, Prometheus scrape, Grafana dashboard, and request logs."),
-            bullet("Repository: https://github.com/rimjhimdubey73/mlops_assignment."),
+            bullet('Repository: <link href="https://github.com/rimjhimdubey73/mlops_assignment" color="#19756F">github.com/rimjhimdubey73/mlops_assignment</link>.'),
             para("Deployment access and video demonstration", "Subhead"),
             bullet("The API is deployed locally on Minikube and has no public URL. Use the README port-forward instructions for access."),
             bullet('<link href="https://drive.google.com/file/d/1ZjDVIeZ9_H_q8ydrz-FwBvNCeN9P8ndM/view?usp=sharing" color="#19756F">Watch the end-to-end pipeline video</link>.'),
