@@ -2,4 +2,4 @@
 
 Local Minikube deployment verified on 2026-10-19. The focused screenshots document Kubernetes workloads, successful health and prediction responses, Grafana monitoring, and the GitHub Actions run. See `../FINAL_REPORT.md` for results and `../../README.md` for setup and local API access.
 
-The remaining assignment deliverable is a short video recording of the end-to-end pipeline. No video is currently included in this folder or elsewhere in the repository.
+The end-to-end pipeline video is hosted on Google Drive: [watch the recording](https://drive.google.com/file/d/1ZjDVIeZ9_H_q8ydrz-FwBvNCeN9P8ndM/view?usp=sharing).

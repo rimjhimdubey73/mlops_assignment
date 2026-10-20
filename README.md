@@ -153,4 +153,4 @@ Open `http://127.0.0.1:3000`, sign in as `admin` with the password used to creat
 
 See [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) and [reports/FINAL_REPORT.pdf](reports/FINAL_REPORT.pdf) for the methods, results, architecture, CI/CD, and deployment status. Repository: [rimjhimdubey73/mlops_assignment](https://github.com/rimjhimdubey73/mlops_assignment). Deployment and CI evidence is in `reports/screenshots/`.
 
-The API is deployed to local Minikube, not a public cloud endpoint. Follow the Kubernetes port-forward instructions above to access it. The required short video recording of the end-to-end pipeline is not currently included and remains to be recorded.
+The API is deployed to local Minikube, not a public cloud endpoint. Follow the Kubernetes port-forward instructions above to access it. The end-to-end pipeline video is available [here](https://drive.google.com/file/d/1ZjDVIeZ9_H_q8ydrz-FwBvNCeN9P8ndM/view?usp=sharing).

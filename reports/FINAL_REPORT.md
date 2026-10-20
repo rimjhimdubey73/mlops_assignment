@@ -78,4 +78,4 @@ flowchart LR
 
 The repository contains the acquisition and preprocessing scripts, cleaned dataset, EDA notebook and figures, model training and tests, MLflow tracking artifacts, API, Dockerfile, CI workflow, Kubernetes manifests, monitoring configuration, and deployment screenshots. The report is provided in Markdown and PDF. The local Minikube API has no public URL; see the README for access instructions.
 
-**Outstanding deliverable:** The assignment requests a short video recording of the end-to-end pipeline. No video is currently included in the repository, so it remains to be recorded and added before submission.
+**Video demonstration:** [Watch the end-to-end pipeline recording](https://drive.google.com/file/d/1ZjDVIeZ9_H_q8ydrz-FwBvNCeN9P8ndM/view?usp=sharing).
